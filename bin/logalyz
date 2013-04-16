@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+$LOAD_PATH.unshift File.dirname(__FILE__) + '/../lib'
+
+require 'arg0'
+require 'logalyzr'
+
+if Arg0::Console.switch?(['-h', '--help']) || ARGV.empty?
+  puts <<-DATA
+Logalyzr
+v0.0.1-alpha
+
+# better to have a days worth (or more shorter span) logs here for quicker analysis
+$ logalyzr -errors $PATH_WITH_ALL_LOGS
+
+# to keep it verbose
+$ logalyzr -v -err $LOG_FILE_PATH
+
+.....more to come
+  DATA
+end
+
+Logalyzr.analyz

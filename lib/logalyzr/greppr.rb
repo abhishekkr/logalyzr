@@ -13,24 +13,6 @@ module Logalyzr
       Time.parse timestamp
     end
 
-    def self.uniq_request_ids(lines)
-      lines.collect{|line|
-        grep_request_id line
-      }.compact.uniq
-    end
-
-    def self.uniq_timestamps(lines)
-      lines.collect{|line|
-        grep_timestamp line
-      }.compact.uniq
-    end
-
-    def self.grep_errors(lines, pattern = 'ERROR')
-      lines.select{|line|
-        line.match(/#{pattern}/)
-      }
-    end
-
     def self.grep_pattern(logfile, pattern)
       axn = lambda{|line|
         target_log = Logalyzr::Mappr.target_log(logfile)
@@ -39,12 +21,18 @@ module Logalyzr
       Logalyzr::FSUtil.read_big_log logfile, axn
     end
 
+    def self.grep_pattern_path(path, pattern)
+      Logalyzr::FSUtil.all_logs(path).each{|log|
+        Logalyzr::Greppr.grep_pattern log, pattern
+      }
+    end
+
     def self.grep_backtrace(logfile, pids = false)
       pids = %x{grep 'ERROR' #{logfile} | awk '{print $7}' | uniq}.strip unless pids
       pids = pids.split("\n")
       pids.each{|pid|
         file = File.open(logfile, 'r')
-        tracefile = File.join $output_dir, "#{pid}_#{File.basename logfile}"
+        tracefile = Logalyzr::FSUtil.tracefile_name(logfile, pid)
         while line = file.gets
           if line.match(/#{pid}\s*ERROR/)
             Logalyzr::FSUtil.dump_log(tracefile, line)
@@ -70,6 +58,7 @@ module Logalyzr
       logfiles.each{|logfile|
         file = File.open(logfile, 'r')
         Logalyzr::FSUtil.dump_log(tracefile, ">>>>> file: #{logfile}")
+        Logalyzr.log_me "Spanning #{tracefile}'s timestamp in #{logfile}..."
         while line = file.gets
           line_timestamp = grep_timestamp line
           if (time_start..time_stop).cover? line_timestamp
