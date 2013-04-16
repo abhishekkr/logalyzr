@@ -2,20 +2,6 @@
 
 Logalyzr to analyze irregular logs.
 
-## Installation
-
-Add this line to your application's Gemfile:
-
-    gem 'logalyzr'
-
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install logalyzr
-
 ## Usage
 
 To prepare errors' tracefiles from a particular Logfile and fetch logs from other service log-files within 4second timespan of that errors
