@@ -17,7 +17,7 @@ module Logalyzr
     end
 
     def self.output_dir
-      $output_dir = File.join( File.dirname(__FILE__), 'output_logalyzr' )
+      $output_dir = File.expand_path File.join( File.dirname(__FILE__), '..', '..', 'output_logalyzr' )
       Dir.mkdir $output_dir unless File.directory? $output_dir
     end
 
