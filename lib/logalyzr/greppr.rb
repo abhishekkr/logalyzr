@@ -40,6 +40,8 @@ module Logalyzr
               break unless inner_line.match(/#{pid}\s*TRACE/)
               Logalyzr::FSUtil.dump_log(tracefile, inner_line)
             end
+
+            Logalyzr.log_me "Preapring #{tracefile}..."
             break
           end
         end
