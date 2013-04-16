@@ -1,53 +1,40 @@
 #!/usr/bin/env ruby
+#
 
-lines = File.read(ARGV[0]).split("\n")
+require_relative 'greppr'
+require_relative 'fsutil'
 
-months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-          'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+module Logalyzr
+  module Mappr
 
-def grep_request_id(line)
-  line.match(/req[A-Za-z0-9\-]*/).to_s
+    def self.target_log(logfile)
+      File.join $output_dir, File.basename(logfile)
+    end
+
+    def self.all_logs(log_location)
+      log_location = File.dirname(log_location) unless File.directory? log_location
+      Dir.glob("#{log_location}/*")
+    end
+
+    def self.errors_only(path)
+
+      all_logs.each{|log|
+        puts "From: #{log}"
+        Logalyzr::Greppr.record_errors log
+      }
+    end
+
+    def self.same_timestamp(path, timestamp)
+      all_logs(path).each{|log|
+        Logalyzr::Greppr.grep_pattern log, timestamp
+      }
+    end
+
+  end
 end
 
-def grep_timestamp(line)
-  line.match(/^[A-Z][a-z][a-z]\s*[0-9]\s*[0-9][0-9]\:[0-9][0-9]\:[0-9][0-9]/).to_s
-end
-
-def uniq_request_ids(lines)
-  lines.collect{|line|
-    grep_request_id line
-  }.compact.uniq
-end
-
-def uniq_timestamps(lines)
-  lines.collect{|line|
-    grep_timestamp line
-  }.compact.uniq
-end
-
-def grep_errors(lines, pattern = 'ERROR')
-  lines.select{|line|
-    line.match(/#{pattern}/)
-  }
-end
-
-def grep_same_time(lines, time_string)
-  lines.select{|line|
-    line.match(/#{time_string}/)
-  }
-end
-
-errors = grep_errors(lines)
-
-timestamps = uniq_timestamps(errors)
-
-request_ids = uniq_request_ids(errors)
-
-#puts timestamps
-
-###trying out mappr
-error = errors[0]
-error_time = grep_timestamp error
-same_time_log = lines.select{|line| line.match(/#{error_time}/)}
-puts same_time_log
-
+$output_dir = File.join( File.dirname(__FILE__), 'output_logs' )
+Dir.mkdir $output_dir unless File.directory? $output_dir
+#Logalyzr::Mappr.same_timestamp ARGV[0], ARGV[1]
+#Logalyzr::Greppr.grep_backtrace ARGV[0], ARGV[1]
+Logalyzr::Greppr.grep_same_time ARGV[0], ARGV[1]
