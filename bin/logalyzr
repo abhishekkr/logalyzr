@@ -7,9 +7,13 @@ require 'logalyzr'
 if Arg0::Console.switch?(['-h', '--help']) || ARGV.empty?
   puts <<-DATA
 Logalyzr
-v0.0.1-alpha
+#{Logalyzr::VERSION}
 
 # better to have a days worth (or more shorter span) logs here for quicker analysis
+
+it will create tracefiles and few other self-generated files in an $output_dir
+default value is ~/output_logalyzr
+can be changed to desired path by providing new value at '-output-dir'
 
 # automated full tracfile making, spanning errors from other logs
 # -err OR -errors OR --trace-span-errors
@@ -22,6 +26,10 @@ $ logalyzr -trace $LOG_FILE
 # span the existing TRACEFILES with relevant logs from other logs in same directory OR provided log file
 # -span OR --span-errors  WITH -from --from-dir
 $ logalyzr -span $TRACEFILE -from $PATH_TO_OTHER_LOG_FILES_OR_LOG_FILE
+
+# lookup in existing TRACEFILES for InstanceID and grep matching InstanceID calls
+#   from provided log and place them in required output file
+$ logalyzr -tracebyid $TRACEFILE -from $REQUIRED_LOG_FILE -to $DESIRED_OUTPUT_FILE
 
 # to keep it verbose
 # -v OR --verbose
