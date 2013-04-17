@@ -13,9 +13,9 @@ module Logalyzr
       Time.parse timestamp
     end
 
-    def self.grep_pattern(logfile, pattern)
+    def self.grep_pattern(logfile, pattern, outputfile=false)
       axn = lambda{|line|
-        target_log = Logalyzr::Mappr.target_log(logfile)
+        target_log = outputfile || Logalyzr::Mappr.target_log(logfile)
         Logalyzr::FSUtil.dump_log(target_log, line) if line.match(/#{pattern}/i)
       }
       Logalyzr::FSUtil.read_big_log logfile, axn
@@ -69,6 +69,14 @@ module Logalyzr
         end
         file.close
       }
+    end
+
+    def self.grep_by_instance_id(tracefile, logfile, outputfile)
+      pattern = "https?\://.*/servers/([a-z0-9\-]{8}\-[a-z0-9\-]{4}\-[a-z0-9\-]{4}\-[a-z0-9\-]{4}\-[a-z0-9\-]{12})"
+      ids = File.read(tracefile).scan(/#{pattern}/).flatten
+      p ids
+      return if ids.empty?
+      grep_pattern(logfile, ids[0], outputfile)
     end
   end
 end

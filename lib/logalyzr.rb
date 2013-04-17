@@ -26,6 +26,12 @@ module Logalyzr
       Logalyzr::Mappr.errors_trace logfile
     end
 
+    Arg0::Console.value_for('-tracebyid').each do |tracefile|
+      Logalyzr::Greppr.grep_by_instance_id tracefile,
+                              Arg0::Console.value_for(['-from', '--from-dir'])[0],
+                              Arg0::Console.value_for(['-to', '--to-dir'])[0]
+    end
+
     Arg0::Console.value_for(['-span', '--span-errors']).each do |tracefile|
       Logalyzr::Mappr.errors_timespan tracefile,
                               Arg0::Console.value_for(['-from', '--from-dir'])
