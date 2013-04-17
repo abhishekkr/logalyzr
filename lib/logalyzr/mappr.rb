@@ -20,7 +20,7 @@ module Logalyzr
         end
       }
 
-      Logalyzr.log_me "Spanning TRACEFILES for #{logfile}..."
+      Logalyzr.log_me "Spanning TRACEFILES for #{logfiles}..."
       Array(tracefiles).each{|tracefile|
         Logalyzr.log_me "Spanning for #{tracefile}..."
         Logalyzr::Greppr.grep_same_time tracefile, logfiles

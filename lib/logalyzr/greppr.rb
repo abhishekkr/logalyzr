@@ -1,5 +1,6 @@
 # Logalyzr::Greppr
 # [volatile] grep/* logic for log lines
+require 'time'
 
 module Logalyzr
   module Greppr
@@ -8,7 +9,6 @@ module Logalyzr
     end
 
     def self.grep_timestamp(line)
-      require 'time'
       timestamp = line.scan(/^[A-Z][a-z]+\s*[0-9]+\s*[0-9]{2}\:[0-9]{2}:[0-9]{2}/)[0]
       Time.parse timestamp
     end
@@ -50,7 +50,7 @@ module Logalyzr
     end
 
     def self.grep_same_time(tracefile, logfiles)
-      source_logfile = File.join log_path, tracefile.split(/_/)[-1]
+      source_logfile = File.join File.dirname(logfiles[0]), tracefile.split(/_/)[-1]
       logfiles = Array(logfiles)
       logfiles.delete source_logfile
 
