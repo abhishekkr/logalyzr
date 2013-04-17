@@ -28,12 +28,14 @@ module Logalyzr
     end
 
     def self.grep_backtrace(logfile, pids = false)
-      pids = %x{grep 'ERROR' #{logfile} | awk '{print $7}' | uniq}.strip unless pids
+      ignore_error = "Max serialization depth exceeded on object"
+      pids = %x{grep 'ERROR' #{logfile} | grep -iv '#{ignore_error}' | awk '{print $7}' | uniq}.strip unless pids
       pids = pids.split("\n")
       pids.each{|pid|
         file = File.open(logfile, 'r')
         tracefile = Logalyzr::FSUtil.tracefile_name(logfile, pid)
         while line = file.gets
+          next if line.match(/#{ignore_error}/)
           if line.match(/#{pid}\s*ERROR/)
             Logalyzr::FSUtil.dump_log(tracefile, line)
             while inner_line = file.gets
@@ -41,7 +43,7 @@ module Logalyzr
               Logalyzr::FSUtil.dump_log(tracefile, inner_line)
             end
 
-            Logalyzr.log_me "Preapring #{tracefile}..."
+            Logalyzr.log_me "Preparing #{tracefile}..."
             break
           end
         end
@@ -63,6 +65,7 @@ module Logalyzr
         Logalyzr.log_me "Spanning #{tracefile}'s timestamp in #{logfile}..."
         while line = file.gets
           line_timestamp = grep_timestamp line
+          break if line_timestamp > time_stop
           if (time_start..time_stop).cover? line_timestamp
             Logalyzr::FSUtil.dump_log(tracefile, line)
           end
