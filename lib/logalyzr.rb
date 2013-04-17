@@ -18,9 +18,17 @@ module Logalyzr
     Logalyzr.verbose = Arg0::Console.switch?(['-v', '--verbose'])
     Logalyzr::FSUtil.output_dir
 
-
-    Arg0::Console.value_for(['-err', '-errors', '--span-errors']).each do |logfile|
+    Arg0::Console.value_for(['-err', '-errors', '--trace-span-errors']).each do |logfile|
       Logalyzr::Mappr.errors_trace_with_timespan logfile
+    end
+
+    Arg0::Console.value_for(['-trace', '--trace-errors']).each do |logfile|
+      Logalyzr::Mappr.errors_trace logfile
+    end
+
+    Arg0::Console.value_for(['-span', '--span-errors']).each do |tracefile|
+      Logalyzr::Mappr.errors_timespan tracefile,
+                              Arg0::Console.value_for(['-from', '--from-dir'])
     end
   end
 end

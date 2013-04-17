@@ -49,9 +49,9 @@ module Logalyzr
       }
     end
 
-    def self.grep_same_time(tracefile, log_path)
+    def self.grep_same_time(tracefile, logfiles)
       source_logfile = File.join log_path, tracefile.split(/_/)[-1]
-      logfiles = Dir.glob("#{log_path}/*")
+      logfiles = Array(logfiles)
       logfiles.delete source_logfile
 
       timestamp = grep_timestamp File.read(tracefile).split("\n")[0]

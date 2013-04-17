@@ -10,9 +10,21 @@ Logalyzr
 v0.0.1-alpha
 
 # better to have a days worth (or more shorter span) logs here for quicker analysis
-$ logalyzr -errors $PATH_WITH_ALL_LOGS
+
+# automated full tracfile making, spanning errors from other logs
+# -err OR -errors OR --trace-span-errors
+$ logalyzr -errors $LOG_FILE
+
+# make TRACEFILES for all errors found in LOG_FILE
+# -trace OR --trace-errors
+$ logalyzr -trace $LOG_FILE
+
+# span the existing TRACEFILES with relevant logs from other logs in same directory OR provided log file
+# -span OR --span-errors  WITH -from --from-dir
+$ logalyzr -span $TRACEFILE -from $PATH_TO_OTHER_LOG_FILES_OR_LOG_FILE
 
 # to keep it verbose
+# -v OR --verbose
 $ logalyzr -v -err $LOG_FILE_PATH
 
 .....more to come
