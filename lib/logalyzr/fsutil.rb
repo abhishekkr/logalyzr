@@ -17,7 +17,9 @@ module Logalyzr
     end
 
     def self.output_dir
-      $output_dir = File.expand_path File.join( File.dirname(__FILE__), '..', '..', 'output_logalyzr' )
+      argv_output_dir     = Arg0::Console.value_for(['-output-dir', '--output-dir'])
+      default_output_dir  = File.expand_path File.join( ENV['HOME'], 'output_logalyzr' )
+      $output_dir = argv_output_dir.empty? ? default_output_dir : argv_output_dir[0]
       Dir.mkdir $output_dir unless File.directory? $output_dir
     end
 
