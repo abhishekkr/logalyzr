@@ -36,5 +36,14 @@ module Logalyzr
       Logalyzr::Mappr.errors_timespan tracefile,
                               Arg0::Console.value_for(['-from', '--from-dir'])
     end
+
+    Arg0::Console.value_for(['-grep', '--grep-pattern']).each do |pattern|
+      trail_count = Arg0::Console.value_for(['-trail'])
+      trail_count =  trail_count.empty? ? 1 : trail_count[0]
+      Logalyzr::Greppr.grep_pattern Arg0::Console.value_for(['-from'])[0],
+                                    pattern,
+                                    Arg0::Console.value_for(['-to'])[0],
+                                    trail_count
+    end
   end
 end

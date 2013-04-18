@@ -6,7 +6,7 @@ Logalyzr to analyze irregular logs.
 
 To get the entire help on how to use for what, run command below or read further
 
-    $ logalyzr -h    
+    $ logalyzr -h
 
     in verbose mode, add '-v'
 
@@ -15,7 +15,7 @@ To get the entire help on how to use for what, run command below or read further
 it will create tracefiles and few other self-generated files in an $output_dir default value is ~/output_logalyzr
 can be changed to desired path by providing new value at '-output-dir'
 
-* automated full tracfile making, spanning errors from other logs 
+* automated full tracfile making, spanning errors from other logs
 >  -err OR -errors OR --trace-span-errors
 ` $ logalyzr -errors $LOG_FILE `
 
@@ -30,6 +30,9 @@ can be changed to desired path by providing new value at '-output-dir'
 * lookup in existing TRACEFILES for InstanceID and grep matching InstanceID calls from provided log and place them in required output file
 >  -tracebyid
 ` $ logalyzr -tracebyid $TRACEFILE -from $REQUIRED_LOG_FILE -to $DESIRED_OUTPUT_FILE `
+
+* lookup for any pattern in a desired log-file and output it to required output file
+` $ logalyzr -from $READ_FROM_LOG -to $WRITE_TO_LOG -grep $PATTERN `
 
 * to keep it verbose
 >  -v OR --verbose

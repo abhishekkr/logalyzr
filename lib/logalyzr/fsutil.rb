@@ -32,7 +32,7 @@ module Logalyzr
     def self.read_big_log(lfile, axn)
       file = File.open(lfile, 'r')
       file.each_line do |curr_line|
-        axn.call curr_line
+        axn.call file, curr_line
       end
       file.close
     end

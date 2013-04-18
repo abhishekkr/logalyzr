@@ -13,10 +13,16 @@ module Logalyzr
       Time.parse timestamp
     end
 
-    def self.grep_pattern(logfile, pattern, outputfile=false)
-      axn = lambda{|line|
+    def self.grep_pattern(logfile, pattern, outputfile=false, with_trail=0)
+      axn = lambda{|file, line|
         target_log = outputfile || Logalyzr::Mappr.target_log(logfile)
-        Logalyzr::FSUtil.dump_log(target_log, line) if line.match(/#{pattern}/i)
+        if line.match(/#{pattern}/i)
+          for idx in 1..with_trail.to_i
+            break unless trail = file.gets
+            line += trail
+          end
+          Logalyzr::FSUtil.dump_log(target_log, line)
+        end
       }
       Logalyzr::FSUtil.read_big_log logfile, axn
     end
